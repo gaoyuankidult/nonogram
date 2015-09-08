@@ -182,15 +182,6 @@ class OekakiSolution(object):
                 return False
         return True
 
-    def unknown_cell_coordinates(self):
-        """Return [(x,y), ...] for every (x,y) pair that locates a cell whose
-        value is UNKNOWN.
-        """
-        return [(x, y)
-                for x in range(self.puzzle.width)
-                for y in range(self.puzzle.height)
-                if self.cells[x][y] == UNKNOWN]
-
     def mark(self, *mark_coords):
         """Set the cells at the indicated coordinates (which must be UNKNOWN)
         to MARKED."""

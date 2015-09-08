@@ -11,11 +11,10 @@ class SolverCoroutine(object):
             "solver did not implement SolverCoroutine.solve")
 
 
-def test_solver(solver_class):
-    """Do a trivial test of the given solver class to see that it's working."""
-    p = OekakiPuzzle([[1], [1, 1]],
-                     [[1], [1], [1]])
-    s = solver_class(p)
+def test_solver(solver_class, puzzle):
+    """Do a trivial test of the given solver class on the given puzzle to see
+    that it's working."""
+    s = solver_class(puzzle)
     for i in s.solve():
         if i is None:
             print "..."
@@ -24,7 +23,3 @@ def test_solver(solver_class):
     print "Coroutine says that it is done"
     assert i.complete()
     assert i.correct()
-
-def demo():
-    from solver.brute_force import BruteForceOekakiSolver
-    test_solver(BruteForceOekakiSolver)

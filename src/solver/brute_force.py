@@ -6,8 +6,10 @@ until one comes up correct.
 
 import copy
 
-from solver_coroutine import SolverCoroutine
 from rules.oekaki import OekakiSolution
+
+from solver_utils import unknown_cell_coordinates
+from solver_coroutine import SolverCoroutine
 
 
 class BruteForceOekakiSolver(SolverCoroutine):
@@ -21,7 +23,7 @@ class BruteForceOekakiSolver(SolverCoroutine):
 
     def solve(self):
         yield self.initial_solution
-        unknown_coords = self.initial_solution.unknown_cell_coordinates()
+        unknown_coords = unknown_cell_coordinates(self.initial_solution)
         for case in range(1 << len(unknown_coords)):
             marks = [unknown_coords[i]
                      for i in range(len(unknown_coords))
