@@ -24,6 +24,7 @@ Some Oekaki can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
 (consider [[1,1],[2]],[[2],[0],[2]]).
 """
 
+import copy
 
 class OekakiPuzzle(object):
     """Class that implements a blank puzzle.
@@ -153,10 +154,20 @@ class OekakiSolution(object):
         return [self.cells[x][y]
                 for x in range(self.puzzle.width)]
 
+    @property
+    def rows(self):
+        for y in range(self._puzzle.height):
+            yield self.row(y)
+
     def column(self, x):
         """Returns the @p x th row of the solution."""
         return [self.cells[x][y]
                 for y in range(self.puzzle.height)]
+
+    @property
+    def columns(self):
+        for x in range(self._puzzle.width):
+            yield self.column(x)
 
     def complete(self):
         """Returns True iff this is a complete solution (no UNKNOWN cells).
@@ -195,6 +206,12 @@ class OekakiSolution(object):
         for (x, y) in unmark_coords:
             assert self.cells[x][y] == UNKNOWN
             self.cells[x][y] = UNMARKED
+
+    def clone(self):
+        """To avoid requiring solvers to copy.deepcopy solutions constantly."""
+        new_soln = OekakiSolution(self.puzzle)
+        new_soln.cells = copy.deepcopy(self.cells)
+        return new_soln
 
     def debug_print(self):
         print self.puzzle.ascii_col_header_string()

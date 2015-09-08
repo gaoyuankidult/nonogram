@@ -4,8 +4,6 @@ Simple considers every possible marking combination for every UNKNOWN cell
 until one comes up correct.
 """
 
-import copy
-
 from rules.oekaki import OekakiSolution
 
 from solver_utils import unknown_cell_coordinates
@@ -31,7 +29,7 @@ class BruteForceOekakiSolver(SolverCoroutine):
             unmarks = [unknown_coords[i]
                        for i in range(len(unknown_coords))
                        if not (case & (1 << i))]
-            solution = copy.deepcopy(self.initial_solution)
+            solution = self.initial_solution.clone()
             solution.mark(*marks)
             solution.unmark(*unmarks)
             assert solution.complete()
