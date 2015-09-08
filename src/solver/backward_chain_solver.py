@@ -64,6 +64,8 @@ class BackwardChainSolver(SolverCoroutine):
         return changed
 
     def solve(self):
+        if not self.initial_solution.correct():
+            return
         yield self.initial_solution
         # Iterate deduction to fixity.
         while self.deduce():
@@ -72,20 +74,33 @@ class BackwardChainSolver(SolverCoroutine):
         unknowns = unknown_cell_coordinates(self.partial_solution)
         if not unknowns:
             return
+        # Sort unknowns to prefer cases where hypotheses are likely to generate
+        # cascading inferences.
         _, speculation_coords = min((len(self.partial_solution_legal_rows[y]) +
                                      len(self.partial_solution_legal_cols[x]),
                                      (x,y))
                                     for (x,y) in unknowns)
         # Hypothesize a cell value; delegate to a new solver for that
         # hypothesis.
-        for fn in (r.NonogramSolution.mark, r.NonogramSolution.unmark):
+        # print "hypothesizing on ", speculation_coords
+        hypothetical_solvers = []
+        # TODO ggould Trying unmarking first on the hunch that unmarks can
+        # sometimes get big splitting leverage.  This is a half-baked idea;
+        # needs any theoretical or even empirical justification.
+        for fn in (r.NonogramSolution.unmark, r.NonogramSolution.mark):
             solver = BackwardChainSolver(
                 self.puzzle, initial_solution=self.partial_solution.clone())
             partial = solver.partial_solution.clone()
             fn(partial, speculation_coords)
             solver.update_partials(partial)
+            hypothetical_solvers.append(solver)
+        # TODO ggould Can we sort these solvers sensibly?
+        # TODO ggould Is there a way around Global Interpreter Locking to
+        # get multicore leverage on this?
+        for solver in hypothetical_solvers:
             for child_partial in solver.solve():
                 if child_partial is not None:
                     yield child_partial
                     if child_partial.complete():
                         return
+        # print "completed hypotheses on", speculation_coords, "without result."
