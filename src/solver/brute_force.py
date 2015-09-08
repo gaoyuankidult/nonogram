@@ -1,4 +1,4 @@
-"""A greedy solver for oekaki problems.
+"""A brute force solver for oekaki problems.
 
 Simple considers every possible marking combination for every UNKNOWN cell
 until one comes up correct.
