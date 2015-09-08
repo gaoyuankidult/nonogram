@@ -160,7 +160,6 @@ class OekakiSolution(object):
 
     def complete(self):
         """Returns True iff this is a complete solution (no UNKNOWN cells).
-        :rtype : bool
         """
         return not any(cell == UNKNOWN for row in self.cells for cell in row)
 
@@ -170,8 +169,6 @@ class OekakiSolution(object):
 
         DOES NOT check if the list can be satisfied for rows and columns
         with UNKNOWNs even if the unknown is irrelevant.
-
-        :rtype : bool
         """
         for x in range(self.puzzle.width):
             col = self.column(x)
@@ -188,8 +185,6 @@ class OekakiSolution(object):
     def unknown_cell_coordinates(self):
         """Return [(x,y), ...] for every (x,y) pair that locates a cell whose
         value is UNKNOWN.
-
-        :rtype : list
         """
         return [(x, y)
                 for x in range(self.puzzle.width)
