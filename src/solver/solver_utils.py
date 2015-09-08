@@ -1,7 +1,7 @@
 """General-purpose solver utilities that might be useful to more than one
 solver."""
 
-import rules.oekaki as r
+import rules.nonogram as r
 
 def unknown_cell_coordinates(solution):
     """Return [(x,y), ...] for every (x,y) pair in @p solution that locates

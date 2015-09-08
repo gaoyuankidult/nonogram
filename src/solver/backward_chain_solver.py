@@ -11,7 +11,7 @@ Hypothetical phase:
  * Explore each possible value in turn.
 """
 
-import rules.oekaki as r
+import rules.nonogram as r
 
 from solver_utils import unknown_cell_coordinates, all_legal_lines
 from solver_coroutine import SolverCoroutine
@@ -20,7 +20,7 @@ from solver_coroutine import SolverCoroutine
 class BackwardChainSolver(SolverCoroutine):
     def __init__(self, puzzle, initial_solution=None):
         self.puzzle = puzzle
-        self.initial_solution = initial_solution or r.OekakiSolution(puzzle)
+        self.initial_solution = initial_solution or r.NonogramSolution(puzzle)
         self.update_partials(self.initial_solution)
 
 
@@ -78,7 +78,7 @@ class BackwardChainSolver(SolverCoroutine):
                                     for (x,y) in unknowns)
         # Hypothesize a cell value; delegate to a new solver for that
         # hypothesis.
-        for fn in (r.OekakiSolution.mark, r.OekakiSolution.unmark):
+        for fn in (r.NonogramSolution.mark, r.NonogramSolution.unmark):
             solver = BackwardChainSolver(
                 self.puzzle, initial_solution=self.partial_solution.clone())
             partial = solver.partial_solution.clone()

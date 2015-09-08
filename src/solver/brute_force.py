@@ -1,23 +1,23 @@
-"""A brute force solver for oekaki problems.
+"""A brute force solver for nonogram problems.
 
 Simple considers every possible marking combination for every UNKNOWN cell
 until one comes up correct.
 """
 
-from rules.oekaki import OekakiSolution
+from rules.nonogram import NonogramSolution
 
 from solver_utils import unknown_cell_coordinates
 from solver_coroutine import SolverCoroutine
 
 
-class BruteForceOekakiSolver(SolverCoroutine):
-    """A class for solving oekaki problems.  There are no intermediate
+class BruteForceNonogramSolver(SolverCoroutine):
+    """A class for solving nonogram problems.  There are no intermediate
     results, so the coroutine does not return any but instead yields
     after a certain quantity of computation."""
 
     def __init__(self, puzzle, initial_solution=None):
         self.puzzle = puzzle
-        self.initial_solution = initial_solution or OekakiSolution(puzzle)
+        self.initial_solution = initial_solution or NonogramSolution(puzzle)
 
     def solve(self):
         yield self.initial_solution

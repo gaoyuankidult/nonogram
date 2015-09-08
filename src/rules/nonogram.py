@@ -1,17 +1,17 @@
-"""Module that implements the rules of the Oekaki puzzle game.
+"""Module that implements the rules of the Nonogram puzzle game.
 
-An Oekaki puzzle presents a user with a blank grid.  Each row and each column
+An Nonogram puzzle presents a user with a blank grid.  Each row and each column
 has a list of run lengths.  The objective is to fill the grid with marked and
 unmarked squares so that in each run and each column the runs of contiguous
 marked squares have the lengths listed.
 
 For instance, this is a valid puzzle:
- OekakiPuzzle([[1],[1,1],[2],[3],[3],[1,1]],[[1,3],[1,3],[5]])
+ NonogramPuzzle([[1],[1,1],[2],[3],[3],[1,1]],[[1,3],[1,3],[5]])
 
      1  1
      3  3  5
     +--------
-1   |   ## 
+1   |   ##
 1 1 |##    ##
 2   |   ## ##
 3   |## ## ##
@@ -20,13 +20,13 @@ For instance, this is a valid puzzle:
 
 The column run lengths and row run lengths must sum to the same number.
 
-Some Oekaki can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
+Some Nonogram can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
 (consider [[1,1],[2]],[[2],[0],[2]]).
 """
 
 import copy
 
-class OekakiPuzzle(object):
+class NonogramPuzzle(object):
     """Class that implements a blank puzzle.
 
     This is an immutable object, because it is unlikely that mutating it would
@@ -137,8 +137,8 @@ def satisfies(cells, run_count_list):
                          [run_count_list[0] - 1] + new_run_count_list[1:])
 
 
-class OekakiSolution(object):
-    """Represents a partial or complete solution to an OekakiPuzzle.
+class NonogramSolution(object):
+    """Represents a partial or complete solution to an NonogramPuzzle.
     Internal coordinates are X left-to-right, Y top-to-bottom."""
 
     def __init__(self, puzzle):
@@ -209,7 +209,7 @@ class OekakiSolution(object):
 
     def clone(self):
         """To avoid requiring solvers to copy.deepcopy solutions constantly."""
-        new_soln = OekakiSolution(self.puzzle)
+        new_soln = NonogramSolution(self.puzzle)
         new_soln.cells = copy.deepcopy(self.cells)
         return new_soln
 

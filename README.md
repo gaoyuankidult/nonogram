@@ -1,2 +1,2 @@
-# oekaki
-Oekaki rules and solvers
+# Nonogram
+Nonogram rules and solvers

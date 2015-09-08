@@ -1,8 +1,8 @@
-"""Solvers for oekaki problems operate as coroutines, yielding partial
+"""Solvers for nonogram problems operate as coroutines, yielding partial
 solutions until they have a complete, correct solution.  A coroutine
 may yield None if it has no intermediate solution."""
 
-from rules.oekaki import OekakiPuzzle
+from rules.nonogram import NonogramPuzzle
 
 
 class SolverCoroutine(object):
