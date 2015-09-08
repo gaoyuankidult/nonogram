@@ -11,8 +11,9 @@ from rules.oekaki import OekakiSolution
 
 
 class BruteForceOekakiSolver(SolverCoroutine):
-    """A class for solving oekaki problems.  A solver acts like a coroutine,
-	yielding partial solutions as it goes."""
+    """A class for solving oekaki problems.  There are no intermediate
+    results, so the coroutine does not return any but instead yields
+    after a certain quantity of computation."""
 
     def __init__(self, puzzle, initial_solution=None):
         self.puzzle = puzzle
@@ -35,4 +36,6 @@ class BruteForceOekakiSolver(SolverCoroutine):
             if solution.correct():
                 yield solution
                 return
+            else:
+                yield None
         yield None
