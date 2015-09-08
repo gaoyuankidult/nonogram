@@ -1,2 +1,2 @@
 # Nonogram
-Nonogram rules and solvers
+Rules and solvers Nonogram ("picross" or "oekaki") puzzles.
