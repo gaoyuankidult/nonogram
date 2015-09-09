@@ -64,11 +64,17 @@ class BackwardChainSolver(SolverCoroutine):
         return changed
 
     def solve(self):
-        if not self.initial_solution.correct():
-            return
         yield self.initial_solution
         # Iterate deduction to fixity.
         while self.deduce():
+            if not self.partial_solution.correct():
+                return
+            if any(len(rows) == 0
+                   for rows in self.partial_solution_legal_rows):
+                return
+            if any(len(cols) == 0
+                   for cols in self.partial_solution_legal_cols):
+                return
             yield self.partial_solution
         # Identify a cell to hypothesize about.
         unknowns = unknown_cell_coordinates(self.partial_solution)
@@ -82,7 +88,6 @@ class BackwardChainSolver(SolverCoroutine):
                                     for (x,y) in unknowns)
         # Hypothesize a cell value; delegate to a new solver for that
         # hypothesis.
-        # print "hypothesizing on ", speculation_coords
         hypothetical_solvers = []
         # TODO ggould Trying unmarking first on the hunch that unmarks can
         # sometimes get big splitting leverage.  This is a half-baked idea;
@@ -103,4 +108,3 @@ class BackwardChainSolver(SolverCoroutine):
                     yield child_partial
                     if child_partial.complete():
                         return
-        # print "completed hypotheses on", speculation_coords, "without result."
