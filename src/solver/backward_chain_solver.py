@@ -18,13 +18,17 @@ from solver_coroutine import SolverCoroutine
 
 
 class BackwardChainSolver(SolverCoroutine):
+    """A solver (see solver_coroutine.py for API details) that uses
+    alternating deductive and recursive phases."""
+
     def __init__(self, puzzle, initial_solution=None):
-        self.puzzle = puzzle
-        self.initial_solution = initial_solution or r.NonogramSolution(puzzle)
-        self.update_partials(self.initial_solution)
+        super(BackwardChainSolver, self).__init__(puzzle, initial_solution)
+        self.update_partials(self.initial_solution.clone())
 
 
     def update_partials(self, new_partial):
+        """Updates the solver with a new partial solution, and causes
+        regeneration of the cached legal rows/columns."""
         self.partial_solution = new_partial
         self.partial_solution_legal_rows = [
             list(all_legal_lines(self.puzzle.row_run_counts[y],
@@ -64,22 +68,33 @@ class BackwardChainSolver(SolverCoroutine):
         return changed
 
     def solve(self):
+        """Yields a partial solution from each iteration of deduction, then
+        delegates to the solve() coroutines of hypotheses on a chosen cell.
+
+        Returns after a complete solution or after it proves that the
+        initial_solution is impossible."""
         yield self.initial_solution
         # Iterate deduction to fixity.
         while self.deduce():
             if not self.partial_solution.correct():
+                # Deduction forced a contradiction.
                 return
             if any(len(rows) == 0
                    for rows in self.partial_solution_legal_rows):
+                # Deduction created an impossible row.
                 return
             if any(len(cols) == 0
                    for cols in self.partial_solution_legal_cols):
+                # Deduction created an impossible column.
                 return
             yield self.partial_solution
+
         # Identify a cell to hypothesize about.
         unknowns = unknown_cell_coordinates(self.partial_solution)
         if not unknowns:
+            # This solution is complete.
             return
+
         # Sort unknowns to prefer cases where hypotheses are likely to generate
         # cascading inferences.
         _, speculation_coords = min((len(self.partial_solution_legal_rows[y]) +
@@ -107,4 +122,5 @@ class BackwardChainSolver(SolverCoroutine):
                 if child_partial is not None:
                     yield child_partial
                     if child_partial.complete():
+                        # Victory!  This hypothesis found a correct solution.
                         return

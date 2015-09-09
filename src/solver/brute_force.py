@@ -12,12 +12,12 @@ from solver_coroutine import SolverCoroutine
 
 class BruteForceNonogramSolver(SolverCoroutine):
     """A class for solving nonogram problems.  There are no intermediate
-    results, so the coroutine does not return any but instead yields
+    results, so the coroutine does not return any but instead yields None
     after a certain quantity of computation."""
 
     def __init__(self, puzzle, initial_solution=None):
-        self.puzzle = puzzle
-        self.initial_solution = initial_solution or NonogramSolution(puzzle)
+        super(BruteForceNonogramSolver, self).__init__(
+            puzzle, initial_solution)
 
     def solve(self):
         yield self.initial_solution

@@ -2,11 +2,23 @@
 solutions until they have a complete, correct solution.  A coroutine
 may yield None if it has no intermediate solution."""
 
-from rules.nonogram import NonogramPuzzle
+import rules.nonogram as r
 
 
 class SolverCoroutine(object):
+    """Abstract base class for solvers."""
+
+    def __init__(self, puzzle, initial_solution=None):
+        self.puzzle = puzzle
+        self.initial_solution = initial_solution or r.NonogramSolution(puzzle)
+
     def solve(self):
+        """This method may yield partial solutions (or None) as much as the
+        implementation desires.  If it discovers a complete, correct solution
+        then it must yield that solution and return.  If it returns without
+        yielding a complete, correct solution, that indicates the solver has
+        failed to solve the partial solution, likely because it is impossible.
+        """
         raise NotImplementedError(
             "solver did not implement SolverCoroutine.solve")
 
