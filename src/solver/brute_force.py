@@ -6,8 +6,8 @@ until one comes up correct.
 
 from rules.nonogram import NonogramSolution
 
-from solver_utils import unknown_cell_coordinates
-from solver_coroutine import SolverCoroutine
+from .solver_utils import unknown_cell_coordinates
+from .solver_coroutine import SolverCoroutine
 
 
 class BruteForceNonogramSolver(SolverCoroutine):

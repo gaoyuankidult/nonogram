@@ -29,9 +29,9 @@ def test_solver(solver_class, puzzle):
     s = solver_class(puzzle)
     for i in s.solve():
         if i is None:
-            print "..."
+            print("...")
         else:
             i.debug_print()
-    print "Coroutine says that it is done"
+    print("Coroutine says that it is done")
     assert i.complete()
     assert i.correct()

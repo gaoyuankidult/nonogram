@@ -13,8 +13,8 @@ Hypothetical phase:
 
 import rules.nonogram as r
 
-from solver_utils import unknown_cell_coordinates, all_legal_lines
-from solver_coroutine import SolverCoroutine
+from .solver_utils import unknown_cell_coordinates, all_legal_lines
+from .solver_coroutine import SolverCoroutine
 
 
 class BackwardChainSolver(SolverCoroutine):
