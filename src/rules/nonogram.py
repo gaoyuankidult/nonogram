@@ -132,7 +132,7 @@ class NonogramPuzzle(object):
             print(self.ascii_nth_single_row_header(n))
 
 
-MARKED, UNMARKED, UNKNOWN = "##", " .", "??"
+MARKED, UNMARKED, UNKNOWN = "##", ". ", "  "
 
 
 def satisfies(cells, run_count_list):
