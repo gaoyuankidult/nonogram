@@ -33,7 +33,7 @@ def _partitions(total, length):
 
 
 def all_legal_lines(run_counts, current_line):
-    """Returns a set of all complete lines (lists of MARKED/UNMARKED)
+    """Return a set of all complete lines (lists of MARKED/UNMARKED)
     that have the given run counts for marked cells and change the
     state only of UNKNOWN cells in current_line."""
     num_marked_runs = len(run_counts)

@@ -18,6 +18,7 @@ class BruteForceNonogramSolver(SolverCoroutine):
             puzzle, initial_solution)
 
     def solve(self):
+        # See superclass docstring.
         yield self.initial_solution
         unknown_coords = unknown_cell_coordinates(self.initial_solution)
         for case in range(1 << len(unknown_coords)):

@@ -40,6 +40,8 @@ class NonogramPuzzle(object):
         self.validate()
 
     def validate(self):
+        """Check the validity of a given puzzle (ie, that the run counts are
+        at all sensible, not that it is uniquely solvable)."""
         row_total = sum(sum(runs) for runs in self._row_run_counts)
         col_total = sum(sum(runs) for runs in self._col_run_counts)
         assert row_total == col_total
@@ -50,45 +52,62 @@ class NonogramPuzzle(object):
                          for runs in self.col_run_counts) - 1
         assert self.width >= min_width, \
             "Puzzle width %d cannot fit runs %d" % (self.width, min_width)
-        assert self.height >= min_height
+        assert self.height >= min_height, \
+            "Puzzle height %d cannot fit runs %d" % (self.height, min_height)
 
     @property
     def row_run_counts(self):
+        """The list of row run counts."""
         return self._row_run_counts
 
     @property
     def col_run_counts(self):
+        """The list of column run counts."""
         return self._col_run_counts
 
     @property
     def width(self):
+        """The width of the puzzle"""
         return len(self.col_run_counts)
 
     @property
     def height(self):
+        """The height of the puzzle"""
         return len(self.row_run_counts)
 
     # Helper routines for ascii rendering
     @staticmethod
     def ascii_single_row_header(run_counts, pad_to=None):
+        """Return the leading string of row run counts that would appear to
+        the left of a grid row when a puzzle is printed out.  If @p pad_to is
+        provided, pads the returned string to that width using leading spaces.
+        """
         content = " ".join(str(run) for run in run_counts)
         padding = ("" if pad_to is None or len(content) > pad_to else
                    " " * (pad_to - len(content) - 1))
         return padding + content + " |"
 
     def ascii_single_row_header_width(self, run_counts):
+        """Return the width of a row run counts string, as would be returned
+        by ascii_single_row_header, for the given @p run_counts"""
         return len(self.ascii_single_row_header(run_counts))
 
     def ascii_max_row_header_width(self):
+        """Return the maximum value of ascii_single_row_header_width for the
+        whole puzzle, ie, the width to which all row run count headers must be
+        padded."""
         return max(self.ascii_single_row_header_width(run_counts)
                    for run_counts in self.row_run_counts)
 
     def ascii_nth_single_row_header(self, n):
+        """Return an appropriately padded row header for row @p n."""
         pad_to = self.ascii_max_row_header_width()
         return self.ascii_single_row_header(self.row_run_counts[n],
                                             pad_to=pad_to)
 
     def ascii_col_header_string(self):
+        """Return a string showing the column run counts, arranged vertically,
+        as would appear above the columns in a printed puzzle."""
         result = ""
         row_padding = " " * self.ascii_max_row_header_width()
         num_header_rows = max(len(run_counts)
@@ -107,6 +126,7 @@ class NonogramPuzzle(object):
         return result
 
     def debug_print(self):
+        """Print a human-readable representation of the puzzle to stdout."""
         print(self.ascii_col_header_string())
         for n in range(len(self.row_run_counts)):
             print(self.ascii_nth_single_row_header(n))
@@ -116,8 +136,8 @@ MARKED, UNMARKED, UNKNOWN = "##", " .", "??"
 
 
 def satisfies(cells, run_count_list):
-    """Returns True if the list of MARKED or UNMARKED cells in @p cells
-    satisfies the lits of runs in @p run_count_list."""
+    """Return True if the list of MARKED or UNMARKED cells in @p cells
+    satisfies the list of runs in @p run_count_list."""
     if UNKNOWN in cells:
         raise AttributeError("UNKNOWN in satisfies() call %s" % cells)
     if not run_count_list:
@@ -149,36 +169,38 @@ class NonogramSolution(object):
 
     @property
     def puzzle(self):
+        """The puzzle for which this object represents a solution."""
         return self._puzzle
 
     def row(self, y):
-        """Returns the @p y th row of the solution."""
+        """Return the @p y th row of the solution."""
         return [self.cells[x][y]
                 for x in range(self.puzzle.width)]
 
     @property
     def rows(self):
+        """A list of the rows of this solution."""
         for y in range(self._puzzle.height):
             yield self.row(y)
 
     def column(self, x):
-        """Returns the @p x th row of the solution."""
+        """Return the @p x th row of the solution."""
         return [self.cells[x][y]
                 for y in range(self.puzzle.height)]
 
     @property
     def columns(self):
+        """A list of the columns of this solution."""
         for x in range(self._puzzle.width):
             yield self.column(x)
 
     def complete(self):
-        """Returns True iff this is a complete solution (no UNKNOWN cells).
-        """
+        """Return True iff this is a complete solution (no UNKNOWN cells)."""
         return not any(cell == UNKNOWN for row in self.cells for cell in row)
 
     def correct(self):
-        """Returns True iff every row or column lacking an UNKNOWN cell
-        adheres to its row or column row count list.
+        """Return True iff every row or column lacking an UNKNOWN cell
+        satisifies its row or column row count list.
 
         DOES NOT check if the list can be satisfied for rows and columns
         with UNKNOWNs even if the unknown is irrelevant.
@@ -212,13 +234,17 @@ class NonogramSolution(object):
             self.cells[x][y] = UNMARKED
 
     def clone(self):
-        """To avoid requiring solvers to copy.deepcopy solutions
+        """Returns a copy of the solution.
+
+        Utility method to avoid requiring solvers to copy.deepcopy solutions
         constantly."""
         new_soln = NonogramSolution(self.puzzle)
         new_soln.cells = copy.deepcopy(self.cells)
         return new_soln
 
     def debug_print(self):
+        """Print a human-readable representation of this solution to stdout.
+        """
         print(self.puzzle.ascii_col_header_string())
         for y in range(self.puzzle.height):
             content = ' '.join(self.cells[x][y]

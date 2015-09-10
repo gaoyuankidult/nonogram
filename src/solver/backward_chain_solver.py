@@ -29,7 +29,7 @@ class BackwardChainSolver(SolverCoroutine):
         self.update_partials(self.initial_solution.clone())
 
     def update_partials(self, new_partial):
-        """Updates the solver with a new partial solution, and causes
+        """Update the solver with a new partial solution, and causes
         regeneration of the cached legal rows/columns."""
         self.partial_solution = new_partial
         self.partial_solution_legal_rows = [
@@ -69,8 +69,8 @@ class BackwardChainSolver(SolverCoroutine):
         return changed
 
     def solve(self):
-        """Yields a partial solution from each iteration of deduction, then
-        delegates to the solve() coroutines of hypotheses on a chosen cell.
+        """Yield a partial solution from each iteration of deduction, then
+        delegate to the solve() coroutines of hypotheses on a chosen cell.
 
         Returns after a complete solution or after it proves that the
         initial_solution is impossible."""
@@ -119,7 +119,7 @@ class BackwardChainSolver(SolverCoroutine):
             hypothetical_solvers.append(solver)
         # TODO ggould Can we sort these solvers sensibly?
         # TODO ggould Is there a way around Global Interpreter Locking to
-        # get multicore leverage on this?
+        #             get multicore leverage on this?
         for solver in hypothetical_solvers:
             try:
                 yield from solver.solve()

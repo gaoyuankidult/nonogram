@@ -17,7 +17,10 @@ class SolverCoroutine(object):
         self.initial_solution = initial_solution or r.NonogramSolution(puzzle)
 
     def solve(self):
-        """This method may yield partial solutions (or None) as much as the
+        """Iteratively solve the puzzle, emitting partial solutions along the
+        way.
+
+        This method may yield partial solutions (or None) as much as the
         implementation desires.  If it discovers a complete, correct solution
         then it must yield that solution and return.
 
