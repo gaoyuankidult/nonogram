@@ -1,9 +1,9 @@
 """Module that implements the rules of the Nonogram puzzle game.
 
-An Nonogram puzzle presents a user with a blank grid.  Each row and each column
-has a list of run lengths.  The objective is to fill the grid with marked and
-unmarked squares so that in each run and each column the runs of contiguous
-marked squares have the lengths listed.
+An Nonogram puzzle presents a user with a blank grid.  Each row and each
+column has a list of run lengths.  The objective is to fill the grid with
+marked and unmarked squares so that in each run and each column the runs of
+contiguous marked squares have the lengths listed.
 
 For instance, this is a valid puzzle:
  NonogramPuzzle([[1],[1,1],[2],[3],[3],[1,1]],[[1,3],[1,3],[5]])
@@ -25,6 +25,7 @@ Some Nonogram can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
 """
 
 import copy
+
 
 class NonogramPuzzle(object):
     """Class that implements a blank puzzle.
@@ -68,7 +69,8 @@ class NonogramPuzzle(object):
         return len(self.row_run_counts)
 
     # Helper routines for ascii rendering
-    def ascii_single_row_header(self, run_counts, pad_to=None):
+    @staticmethod
+    def ascii_single_row_header(run_counts, pad_to=None):
         content = " ".join(str(run) for run in run_counts)
         padding = ("" if pad_to is None or len(content) > pad_to else
                    " " * (pad_to - len(content) - 1))
@@ -183,12 +185,14 @@ class NonogramSolution(object):
         """
         for x in range(self.puzzle.width):
             col = self.column(x)
-            if UNKNOWN in col: continue
+            if UNKNOWN in col:
+                continue
             if not satisfies(col, self.puzzle.col_run_counts[x]):
                 return False
         for y in range(self.puzzle.height):
             row = self.row(y)
-            if UNKNOWN in row: continue
+            if UNKNOWN in row:
+                continue
             if not satisfies(row, self.puzzle.row_run_counts[y]):
                 return False
         return True
@@ -208,7 +212,8 @@ class NonogramSolution(object):
             self.cells[x][y] = UNMARKED
 
     def clone(self):
-        """To avoid requiring solvers to copy.deepcopy solutions constantly."""
+        """To avoid requiring solvers to copy.deepcopy solutions
+        constantly."""
         new_soln = NonogramSolution(self.puzzle)
         new_soln.cells = copy.deepcopy(self.cells)
         return new_soln

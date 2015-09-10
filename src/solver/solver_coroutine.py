@@ -30,12 +30,13 @@ class SolverCoroutine(object):
 def test_solver(solver_class, puzzle):
     """Do a trivial test of the given solver class on the given puzzle to see
     that it's working."""
-    s = solver_class(puzzle)
-    for i in s.solve():
-        if i is None:
+    solver = solver_class(puzzle)
+    solution = None
+    for solution in solver.solve():
+        if solution is None:
             print("...")
         else:
-            i.debug_print()
+            solution.debug_print()
     print("Coroutine says that it is done")
-    assert i.complete()
-    assert i.correct()
+    assert solution.complete()
+    assert solution.correct()

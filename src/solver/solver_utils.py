@@ -3,6 +3,7 @@ solver."""
 
 import rules.nonogram as r
 
+
 def unknown_cell_coordinates(solution):
     """Return [(x,y), ...] for every (x,y) pair in @p solution that locates
     a cell whose value is UNKNOWN.
@@ -11,6 +12,7 @@ def unknown_cell_coordinates(solution):
             for x in range(solution.puzzle.width)
             for y in range(solution.puzzle.height)
             if solution.cells[x][y] == r.UNKNOWN]
+
 
 def _partitions(total, length):
     """Generate all lists of nonnegative integers of length @p length that sum
@@ -28,6 +30,7 @@ def _partitions(total, length):
                       for shorter_partition in shorter_partitions)
         for p in partitions:
             yield p
+
 
 def all_legal_lines(run_counts, current_line):
     """Returns a set of all complete lines (lists of MARKED/UNMARKED)

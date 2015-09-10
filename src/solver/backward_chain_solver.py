@@ -23,8 +23,10 @@ class BackwardChainSolver(SolverCoroutine):
 
     def __init__(self, puzzle, initial_solution=None):
         super(BackwardChainSolver, self).__init__(puzzle, initial_solution)
+        self.partial_solution = None
+        self.partial_solution_legal_rows = None
+        self.partial_solution_legal_cols = None
         self.update_partials(self.initial_solution.clone())
-
 
     def update_partials(self, new_partial):
         """Updates the solver with a new partial solution, and causes
@@ -39,7 +41,6 @@ class BackwardChainSolver(SolverCoroutine):
                                  self.partial_solution.column(x)))
             for x in range(self.puzzle.width)]
 
-
     def deduce(self):
         """Change UNKNOWN cells to MARKED or UNMARKED in self.partial_solution
         where that can be inferred from commonalities between the possible
@@ -48,18 +49,18 @@ class BackwardChainSolver(SolverCoroutine):
         new_partial_solution = self.partial_solution.clone()
         changed = False
         for (x, col) in enumerate(self.partial_solution.columns):
-            col_runs = self.puzzle.col_run_counts[x]
             possible_lines = self.partial_solution_legal_cols[x]
             for y in range(self.puzzle.height):
-                if new_partial_solution.cells[x][y] != r.UNKNOWN: continue
+                if new_partial_solution.cells[x][y] != r.UNKNOWN:
+                    continue
                 if len(set(line[y] for line in possible_lines)) == 1:
                     changed = True
                     new_partial_solution.cells[x][y] = possible_lines[0][y]
         for (y, row) in enumerate(self.partial_solution.rows):
-            row_runs = self.puzzle.row_run_counts[y]
             possible_lines = self.partial_solution_legal_rows[y]
             for x in range(self.puzzle.width):
-                if new_partial_solution.cells[x][y] != r.UNKNOWN: continue
+                if new_partial_solution.cells[x][y] != r.UNKNOWN:
+                    continue
                 if len(set(line[x] for line in possible_lines)) == 1:
                     changed = True
                     new_partial_solution.cells[x][y] = possible_lines[0][x]
@@ -85,7 +86,8 @@ class BackwardChainSolver(SolverCoroutine):
             if any(len(cols) == 0
                    for cols in self.partial_solution_legal_cols):
                 # Deduction created an impossible column.
-                raise SolutionNotFound("Deduction created an impossible column")
+                raise SolutionNotFound(
+                    "Deduction created an impossible column")
             yield self.partial_solution
 
         # Identify a cell to hypothesize about.
@@ -94,12 +96,13 @@ class BackwardChainSolver(SolverCoroutine):
             # Deduction produced a complete solution; we win.
             return
 
-        # Sort unknowns to prefer cases where hypotheses are likely to generate
-        # cascading inferences.
-        _, speculation_coords = min((len(self.partial_solution_legal_rows[y]) +
-                                     len(self.partial_solution_legal_cols[x]),
-                                     (x,y))
-                                    for (x,y) in unknowns)
+        # Sort unknowns to prefer cases where hypotheses are likely to
+        # generate cascading inferences.
+        _, speculation_coords = min(
+            (len(self.partial_solution_legal_rows[y]) +
+             len(self.partial_solution_legal_cols[x]),
+            (x, y))
+            for (x, y) in unknowns)
 
         # Hypothesize a cell value; delegate to a new solver for that
         # hypothesis.
@@ -122,7 +125,7 @@ class BackwardChainSolver(SolverCoroutine):
                 yield from solver.solve()
                 # Victory!  This hypothesis found a correct solution.
                 return
-            except SolutionNotFound as e:
+            except SolutionNotFound as _:
                 pass  # Ignore this and move on to the next.
         raise SolutionNotFound("All hypotheses at %s failed",
                                speculation_coords)
