@@ -4,8 +4,9 @@ Simple considers every possible marking combination for every UNKNOWN cell
 until one comes up correct.
 """
 
-from .solver_utils import unknown_cell_coordinates
-from .solver_coroutine import SolverCoroutine
+# TODO ggould figure out why pycharm dislikes doing these as local imports.
+from solver.solver_utils import unknown_cell_coordinates
+from solver.solver_coroutine import SolverCoroutine
 
 
 class BruteForceNonogramSolver(SolverCoroutine):

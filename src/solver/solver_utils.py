@@ -1,7 +1,7 @@
 """General-purpose solver utilities that might be useful to more than one
 solver."""
 
-import rules.nonogram as r
+import rules.nonogram as rules
 
 
 def unknown_cell_coordinates(solution):
@@ -11,7 +11,7 @@ def unknown_cell_coordinates(solution):
     return [(x, y)
             for x in range(solution.puzzle.width)
             for y in range(solution.puzzle.height)
-            if solution.cells[x][y] == r.UNKNOWN]
+            if solution.cells[x][y] == rules.UNKNOWN]
 
 
 def _partitions(total, length):
@@ -47,15 +47,15 @@ def all_legal_lines(run_counts, current_line):
     # cells are already spoken for; the remaining unmarks can be allocated
     # in any way over the remaining unmarked runs.
     for partition in _partitions(num_unallocated_unmarks, num_unmarked_runs):
-        line = [r.UNMARKED] * partition[0]
+        line = [rules.UNMARKED] * partition[0]
         for i in range(num_marked_runs):
-            line += [r.MARKED] * run_counts[i]
-            line += [r.UNMARKED] * (partition[i + 1] + 1)
+            line += [rules.MARKED] * run_counts[i]
+            line += [rules.UNMARKED] * (partition[i + 1] + 1)
         line.pop()
         assert len(line) == len(current_line)
         # Filter out any allocation inconsistent with current_line.
         for i in range(len(current_line)):
-            if current_line[i] != r.UNKNOWN:
+            if current_line[i] != rules.UNKNOWN:
                 if current_line[i] != line[i]:
                     break
         else:

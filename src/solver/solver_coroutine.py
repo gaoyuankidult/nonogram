@@ -2,7 +2,7 @@
 solutions until they have a complete, correct solution.  A coroutine
 may yield None if it has no intermediate solution."""
 
-import rules.nonogram as r
+import rules.nonogram as rules
 
 
 class SolutionNotFound(RuntimeError):
@@ -14,7 +14,8 @@ class SolverCoroutine(object):
 
     def __init__(self, puzzle, initial_solution=None):
         self.puzzle = puzzle
-        self.initial_solution = initial_solution or r.NonogramSolution(puzzle)
+        self.initial_solution = (initial_solution or
+                                 rules.NonogramSolution(puzzle))
 
     def solve(self):
         """Iteratively solve the puzzle, emitting partial solutions along the

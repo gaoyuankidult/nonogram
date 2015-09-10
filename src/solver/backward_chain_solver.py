@@ -11,10 +11,11 @@ Hypothetical phase:
  * Explore each possible value in turn.
 """
 
-import rules.nonogram as r
+import rules.nonogram as rules
 
-from .solver_utils import unknown_cell_coordinates, all_legal_lines
-from .solver_coroutine import SolverCoroutine, SolutionNotFound
+# TODO ggould figure out why pycharm dislikes doing these as local imports.
+from solver.solver_utils import unknown_cell_coordinates, all_legal_lines
+from solver.solver_coroutine import SolverCoroutine, SolutionNotFound
 
 
 class BackwardChainSolver(SolverCoroutine):
@@ -51,7 +52,7 @@ class BackwardChainSolver(SolverCoroutine):
         for (x, col) in enumerate(self.partial_solution.columns):
             possible_lines = self.partial_solution_legal_cols[x]
             for y in range(self.puzzle.height):
-                if new_partial_solution.cells[x][y] != r.UNKNOWN:
+                if new_partial_solution.cells[x][y] != rules.UNKNOWN:
                     continue
                 if len(set(line[y] for line in possible_lines)) == 1:
                     changed = True
@@ -59,7 +60,7 @@ class BackwardChainSolver(SolverCoroutine):
         for (y, row) in enumerate(self.partial_solution.rows):
             possible_lines = self.partial_solution_legal_rows[y]
             for x in range(self.puzzle.width):
-                if new_partial_solution.cells[x][y] != r.UNKNOWN:
+                if new_partial_solution.cells[x][y] != rules.UNKNOWN:
                     continue
                 if len(set(line[x] for line in possible_lines)) == 1:
                     changed = True
@@ -110,7 +111,8 @@ class BackwardChainSolver(SolverCoroutine):
         # TODO ggould Trying unmarking first on the hunch that unmarks can
         # sometimes get big splitting leverage.  This is a half-baked idea;
         # needs any theoretical or even empirical justification.
-        for fn in (r.NonogramSolution.unmark, r.NonogramSolution.mark):
+        for fn in (rules.NonogramSolution.unmark,
+                   rules.NonogramSolution.mark):
             solver = BackwardChainSolver(
                 self.puzzle, initial_solution=self.partial_solution.clone())
             partial = solver.partial_solution.clone()
