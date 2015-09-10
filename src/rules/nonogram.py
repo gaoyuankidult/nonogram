@@ -105,9 +105,9 @@ class NonogramPuzzle(object):
         return result
 
     def debug_print(self):
-        print self.ascii_col_header_string()
+        print(self.ascii_col_header_string())
         for n in range(len(self.row_run_counts)):
-            print self.ascii_nth_single_row_header(n)
+            print(self.ascii_nth_single_row_header(n))
 
 
 MARKED, UNMARKED, UNKNOWN = "##", " .", "??"
@@ -214,8 +214,8 @@ class NonogramSolution(object):
         return new_soln
 
     def debug_print(self):
-        print self.puzzle.ascii_col_header_string()
+        print(self.puzzle.ascii_col_header_string())
         for y in range(self.puzzle.height):
             content = ' '.join(self.cells[x][y]
                                for x in range(self.puzzle.width))
-            print self.puzzle.ascii_nth_single_row_header(y) + " " + content
+            print(self.puzzle.ascii_nth_single_row_header(y) + " " + content)

@@ -13,8 +13,8 @@ Hypothetical phase:
 
 import rules.nonogram as r
 
-from solver_utils import unknown_cell_coordinates, all_legal_lines
-from solver_coroutine import SolverCoroutine
+from .solver_utils import unknown_cell_coordinates, all_legal_lines
+from .solver_coroutine import SolverCoroutine, SolutionNotFound
 
 
 class BackwardChainSolver(SolverCoroutine):
@@ -77,22 +77,21 @@ class BackwardChainSolver(SolverCoroutine):
         # Iterate deduction to fixity.
         while self.deduce():
             if not self.partial_solution.correct():
-                # Deduction forced a contradiction.
-                return
+                raise SolutionNotFound("Deduction forced a contradiction")
             if any(len(rows) == 0
                    for rows in self.partial_solution_legal_rows):
                 # Deduction created an impossible row.
-                return
+                raise SolutionNotFound("Deduction created an impossible row")
             if any(len(cols) == 0
                    for cols in self.partial_solution_legal_cols):
                 # Deduction created an impossible column.
-                return
+                raise SolutionNotFound("Deduction created an impossible column")
             yield self.partial_solution
 
         # Identify a cell to hypothesize about.
         unknowns = unknown_cell_coordinates(self.partial_solution)
         if not unknowns:
-            # This solution is complete.
+            # Deduction produced a complete solution; we win.
             return
 
         # Sort unknowns to prefer cases where hypotheses are likely to generate
@@ -101,6 +100,7 @@ class BackwardChainSolver(SolverCoroutine):
                                      len(self.partial_solution_legal_cols[x]),
                                      (x,y))
                                     for (x,y) in unknowns)
+
         # Hypothesize a cell value; delegate to a new solver for that
         # hypothesis.
         hypothetical_solvers = []
@@ -118,9 +118,11 @@ class BackwardChainSolver(SolverCoroutine):
         # TODO ggould Is there a way around Global Interpreter Locking to
         # get multicore leverage on this?
         for solver in hypothetical_solvers:
-            for child_partial in solver.solve():
-                if child_partial is not None:
-                    yield child_partial
-                    if child_partial.complete():
-                        # Victory!  This hypothesis found a correct solution.
-                        return
+            try:
+                yield from solver.solve()
+                # Victory!  This hypothesis found a correct solution.
+                return
+            except SolutionNotFound as e:
+                pass  # Ignore this and move on to the next.
+        raise SolutionNotFound("All hypotheses at %s failed",
+                               speculation_coords)

@@ -5,6 +5,10 @@ may yield None if it has no intermediate solution."""
 import rules.nonogram as r
 
 
+class SolutionNotFound(RuntimeError):
+    pass
+
+
 class SolverCoroutine(object):
     """Abstract base class for solvers."""
 
@@ -15,9 +19,9 @@ class SolverCoroutine(object):
     def solve(self):
         """This method may yield partial solutions (or None) as much as the
         implementation desires.  If it discovers a complete, correct solution
-        then it must yield that solution and return.  If it returns without
-        yielding a complete, correct solution, that indicates the solver has
-        failed to solve the partial solution, likely because it is impossible.
+        then it must yield that solution and return.
+
+        If no solution is possible, raises SolutionNotFound.
         """
         raise NotImplementedError(
             "solver did not implement SolverCoroutine.solve")
@@ -29,9 +33,9 @@ def test_solver(solver_class, puzzle):
     s = solver_class(puzzle)
     for i in s.solve():
         if i is None:
-            print "..."
+            print("...")
         else:
             i.debug_print()
-    print "Coroutine says that it is done"
+    print("Coroutine says that it is done")
     assert i.complete()
     assert i.correct()
