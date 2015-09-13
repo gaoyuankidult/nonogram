@@ -34,7 +34,8 @@ class NonogramPuzzle(object):
     be valid and likely it would create bugs.
     """
 
-    def __init__(self, row_run_counts, column_run_counts):
+    def __init__(self, name, row_run_counts, column_run_counts):
+        self._name = name
         self._row_run_counts = tuple(tuple(run) for run in row_run_counts)
         self._col_run_counts = tuple(tuple(run) for run in column_run_counts)
         self.validate()
@@ -54,6 +55,11 @@ class NonogramPuzzle(object):
             "Puzzle width %d cannot fit runs %d" % (self.width, min_width)
         assert self.height >= min_height, \
             "Puzzle height %d cannot fit runs %d" % (self.height, min_height)
+
+    @property
+    def name(self):
+        """The name of the puzzle; may be None."""
+        return self._name
 
     @property
     def row_run_counts(self):
