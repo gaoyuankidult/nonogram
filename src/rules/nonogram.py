@@ -206,10 +206,10 @@ class NonogramSolution(object):
 
     def correct(self):
         """Return True iff every row or column lacking an UNKNOWN cell
-        satisifies its row or column row count list.
+        satisfies its row or column row count list.
 
         DOES NOT check if the list can be satisfied for rows and columns
-        with UNKNOWNs even if the unknown is irrelevant.
+        with UNKNOWN even if the unknown is irrelevant.
         """
         for x in range(self.puzzle.width):
             col = self.column(x)
