@@ -23,6 +23,15 @@ class SolutionErrorTest(unittest.TestCase):
             self.assertTrue(solution.complete())
             self.assertFalse(solution.correct())
 
+    def test_ambiguity(self):
+        num_solutions = 0
+        for solution in all_possible_total_solutions(
+                NonogramSolution(ambiguous_puzzle)):
+            self.assertTrue(solution.complete())
+            if solution.correct():
+                num_solutions += 1
+        self.assertGreater(num_solutions, 1)
+
 
 # Obligatory main hook
 
