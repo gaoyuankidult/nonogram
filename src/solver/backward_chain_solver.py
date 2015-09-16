@@ -14,7 +14,7 @@ Hypothetical phase:
 import rules.nonogram as rules
 
 # TODO ggould figure out why pycharm dislikes doing these as local imports.
-from solver.solver_utils import unknown_cell_coordinates, all_legal_lines
+from solver.solver_utils import all_legal_lines
 from solver.solver_coroutine import SolverCoroutine, SolutionNotFound
 
 
@@ -92,7 +92,7 @@ class BackwardChainSolver(SolverCoroutine):
             yield self.partial_solution
 
         # Identify a cell to hypothesize about.
-        unknowns = unknown_cell_coordinates(self.partial_solution)
+        unknowns = self.partial_solution.unknown_cell_coordinates()
         if not unknowns:
             # Deduction produced a complete solution; we win.
             return
@@ -100,9 +100,9 @@ class BackwardChainSolver(SolverCoroutine):
         # Sort unknowns to prefer cases where hypotheses are likely to
         # generate cascading inferences.
         _, speculation_coords = min(
-            (len(self.partial_solution_legal_rows[y]) +
-             len(self.partial_solution_legal_cols[x]),
-            (x, y))
+            ((len(self.partial_solution_legal_rows[y]) +
+              len(self.partial_solution_legal_cols[x])),
+             (x, y))
             for (x, y) in unknowns)
 
         # Hypothesize a cell value; delegate to a new solver for that
@@ -121,7 +121,7 @@ class BackwardChainSolver(SolverCoroutine):
             hypothetical_solvers.append(solver)
         # TODO ggould Can we sort these solvers sensibly?
         # TODO ggould Is there a way around Global Interpreter Locking to
-        #             get multicore leverage on this?
+        # get multicore leverage on this?
         for solver in hypothetical_solvers:
             try:
                 yield from solver.solve()

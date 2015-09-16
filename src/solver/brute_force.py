@@ -5,9 +5,8 @@ until one comes up correct.
 """
 
 # TODO ggould figure out why pycharm dislikes doing these as local imports.
-from solver.solver_utils import unknown_cell_coordinates
 from solver.solver_coroutine import SolverCoroutine
-
+from rules.nonogram import NonogramSolution, all_possible_total_solutions
 
 class BruteForceNonogramSolver(SolverCoroutine):
     """A class for solving nonogram problems.  There are no intermediate
@@ -21,21 +20,8 @@ class BruteForceNonogramSolver(SolverCoroutine):
     def solve(self):
         # See superclass docstring.
         yield self.initial_solution
-        unknown_coords = unknown_cell_coordinates(self.initial_solution)
-        for case in range(1 << len(unknown_coords)):
-            marks = [unknown_coords[i]
-                     for i in range(len(unknown_coords))
-                     if case & (1 << i)]
-            unmarks = [unknown_coords[i]
-                       for i in range(len(unknown_coords))
-                       if not (case & (1 << i))]
-            solution = self.initial_solution.clone()
-            solution.mark(*marks)
-            solution.unmark(*unmarks)
+        for solution in all_possible_total_solutions(
+                NonogramSolution(self.puzzle)):
             assert solution.complete()
             if solution.correct():
                 yield solution
-                return
-            else:
-                yield None
-        yield None

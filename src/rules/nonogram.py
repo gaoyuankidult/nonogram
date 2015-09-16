@@ -25,6 +25,7 @@ Some Nonogram can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
 """
 
 import copy
+import itertools
 
 
 class NonogramPuzzle(object):
@@ -173,6 +174,27 @@ class NonogramSolution(object):
         self._puzzle = puzzle
         self.cells = [[UNKNOWN] * puzzle.height for _ in range(puzzle.width)]
 
+    def all_coordinates(self):
+        """Return a (x, y) pair for each cell in the solution."""
+        return ((x, y)
+                for x in range(self._puzzle.width)
+                for y in range(self._puzzle.height))
+
+    def unknown_cell_coordinates(self):
+        """Return [(x,y), ...] for every (x,y) pair in @p solution that locates
+        a cell whose value is UNKNOWN.
+        """
+        return [(x, y)
+                for x in range(self.puzzle.width)
+                for y in range(self.puzzle.height)
+                if self.cells[x][y] == UNKNOWN]
+
+    def count(self, cell_value):
+        """Return the number of cells with the given @p cell_value."""
+        return len([(x, y)
+                    for (x, y) in self.all_coordinates()
+                    if self.cells[x][y] == cell_value])
+
     @property
     def puzzle(self):
         """The puzzle for which this object represents a solution."""
@@ -256,3 +278,22 @@ class NonogramSolution(object):
             content = ' '.join(self.cells[x][y]
                                for x in range(self.puzzle.width))
             print(self.puzzle.ascii_nth_single_row_header(y) + " " + content)
+
+
+def all_possible_total_solutions(base_solution):
+    """Generator of all possible total solutions (nearly all of them wrong)
+    for @p puzzle."""
+    num_marks = (sum(sum(runs)
+                     for runs in base_solution.puzzle.row_run_counts) -
+                 base_solution.count(MARKED))
+    combos = itertools.combinations(base_solution.unknown_cell_coordinates(),
+                                    num_marks)
+    for mark_coordinates in combos:
+        solution = base_solution.clone()
+        marks = set(mark_coordinates)
+        unmarks = set(base_solution.unknown_cell_coordinates()) - marks
+        for coord in marks:
+            solution.mark(coord)
+        for coord in unmarks:
+            solution.unmark(coord)
+        yield solution

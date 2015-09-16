@@ -4,16 +4,6 @@ solver."""
 import rules.nonogram as rules
 
 
-def unknown_cell_coordinates(solution):
-    """Return [(x,y), ...] for every (x,y) pair in @p solution that locates
-    a cell whose value is UNKNOWN.
-    """
-    return [(x, y)
-            for x in range(solution.puzzle.width)
-            for y in range(solution.puzzle.height)
-            if solution.cells[x][y] == rules.UNKNOWN]
-
-
 def _partitions(total, length):
     """Generate all lists of nonnegative integers of length @p length that sum
     to @p total."""

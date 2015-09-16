@@ -14,6 +14,13 @@ puzzles["easy_puzzle"] = easy_puzzle = NonogramPuzzle(
     [[1], [1], [1]])
 
 
+# This puzzle is contradictory and has no solution.
+puzzles["contradictory_puzzle"] = contradictory_puzzle = NonogramPuzzle(
+    "Contradictory Puzzle",
+    [[1], [1], [0]],
+    [[1, 1]])
+
+
 # This puzzle has multiple legal solutions.
 puzzles["ambiguous_puzzle"] = ambiguous_puzzle = NonogramPuzzle(
     "Ambiguous Puzzle",
@@ -32,4 +39,3 @@ puzzles["hard_picture"] = hard_puzzle = NonogramPuzzle(
     [[2], [1, 2], [2, 3], [2, 3], [3, 1, 1], [2, 1, 1], [1, 1, 1, 2, 2],
      [1, 1, 3, 1, 3], [2, 6, 4], [3, 3, 9, 1], [5, 3, 2], [3, 1, 2, 2],
      [2, 1, 7], [3, 3, 2], [2, 4], [2, 1, 2], [2, 2, 1], [2, 2], [1], [1]])
-
