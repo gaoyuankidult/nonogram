@@ -20,7 +20,7 @@ For instance, this is a valid puzzle:
 
 The column run lengths and row run lengths must sum to the same number.
 
-Some Nonogram can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
+Some Nonograms can be undecidable (consider [[1][1]],[[1][1]]) or inconsistent
 (consider [[1,1],[2]],[[2],[0],[2]]).
 """
 
